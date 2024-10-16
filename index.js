@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import connectToMongoDB from './src/db/connectToMongoDB.js';
+import userRouter from "./src/routes/users.js"
 
 dotenv.config();
 const PORT = process.env.PORT || 5000
@@ -18,6 +19,10 @@ app.get("/", (req, res)=>{
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+// API
+app.use("/api/users",userRouter);
+
 
 app.listen(PORT,()=>{
     connectToMongoDB();
