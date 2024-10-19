@@ -3,7 +3,6 @@ import Job from "../models/Job.js";
 const getJobBySearch = async (req, res) => {
   // Điều kiện tìm kiếm động, chỉ thêm nếu người dùng có nhập giá trị
   const searchConditions = {};
-  
 
   if (req.query.country) {
     searchConditions.country = new RegExp(req.query.country, "i");
