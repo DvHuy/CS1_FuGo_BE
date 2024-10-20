@@ -85,4 +85,26 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { getAllUsers, getSingleUser, updateUser };
+// delete User
+const deleteUser = async (req,res) => {
+  const id = req.params.id
+  
+  try {
+      
+      const deletedUser = await User.findByIdAndDelete(id);
+
+      res.status(200)
+      .json({
+          success: true,
+          message: "Successfully deleted",
+      });
+  } catch (error) {
+      res.status(500 )
+      .json({
+          success: false,
+          message: "Failed to delete",
+      });
+  }
+};
+
+export { createUser ,getAllUsers, getSingleUser, updateUser, deleteUser };
