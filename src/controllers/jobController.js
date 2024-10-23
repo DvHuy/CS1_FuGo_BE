@@ -42,9 +42,9 @@ const getJobBySearch = async (req, res) => {
   }
 };
 
-export { getJobBySearch };
 
-export const createJobs = async (req,res)=>{
+
+const createJobs = async (req,res)=>{
 
   const newJobs = new Job(req.body);
 
@@ -66,7 +66,7 @@ export const createJobs = async (req,res)=>{
 };
 
 // update tour
-export const updateJobs = async (req,res) => {
+const updateJobs = async (req,res) => {
   
   const id = req.params.id
   
@@ -91,8 +91,8 @@ export const updateJobs = async (req,res) => {
   }
 };
 
-// delete tour
-export const deleteJobs = async (req,res) => {
+// delete job
+const deleteJobs = async (req,res) => {
   const id = req.params.id
   
   try {
@@ -113,28 +113,9 @@ export const deleteJobs = async (req,res) => {
   }
 };
 
-// getSingle job
-export const getSingleJob = async (req,res) => {
-  const id = req.params.id
-  try {
-      const job = await Job.findById(id);
-      res.status(200)
-      .json({
-          success: true,
-          message: "Successfully get",
-          data: job,
-      });
-  } catch (error) {
-      res.status(404)
-      .json({
-          success: false,
-          message: "Not found",
-      });
-  }
-};
 
 // getAll job
-export const getAllJobs = async (req,res) => {
+const getAllJobs = async (req,res) => {
   // for pagination
   const page = parseInt(req.query.page);
 
@@ -157,3 +138,5 @@ export const getAllJobs = async (req,res) => {
       });
   }
 };
+
+export { getJobBySearch, createJobs, getAllJobs, deleteJobs, updateJobs};
