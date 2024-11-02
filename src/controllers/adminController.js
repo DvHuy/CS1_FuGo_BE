@@ -1,5 +1,6 @@
 import User from "../models/User.js";
-import { encrypt, decrypt } from "../security/encryption.js";
+import { decrypt, encrypt } from "../security/encryption.js";
+
 
 export const userController = {
     // Get user by id 
