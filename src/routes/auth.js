@@ -1,10 +1,19 @@
+import { Router } from "express";
+import { authController } from "../controllers/authController.js";
+import { middlewareController } from "../middleware/middleware.js";
 
-import express from 'express'
-import { login, register } from '../controllers/authController.js'
 
-const router = express.Router()
+const router = Router();
 
-router.post('/register', register)
-router.post('/login', login)
+//Register
+router.post("/register", authController.registerAccount);
 
-export default router
+//Login
+router.post("/login", authController.loginAccount);
+
+// Refresh token 
+router.post("/refresh", authController.requestRefreshToken);
+
+// Logout 
+router.post("/logout", middlewareController.verifyToken, authController.logoutAccount);
+export default router;
