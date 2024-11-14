@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
   accountId: {
     type: String,
     unique: true,
-    sparse: true,
+    required: true,
   },
   username: {
     type: String,

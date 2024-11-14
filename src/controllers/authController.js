@@ -1,6 +1,6 @@
-
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { sendMail } from "../utils/mailer.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -27,7 +27,13 @@ export const authController = {
             if (email) {
                 encryptedEmail = encrypt(email); // Mã hóa email
                 const existingAccount = await Account.findOne({ email: encryptedEmail });
-                if (existingAccount) {
+                if(existingAccount && isNaN(existingAccount.verify)){
+                    return res.status(400).json({ 
+                        success: false, 
+                        message: "Email already exists. Please verify in email !!! " 
+                    });
+                }
+                else if (existingAccount) {
                     return res.status(400).json({ 
                         success: false, 
                         message: "Email already exists" 
@@ -68,6 +74,9 @@ export const authController = {
             // Lưu tài khoản mới vào database
             const savedAccount = await account.save();
 
+            console.log(`{process.env.APP_URL}/api/v1/auth/verify?email=${email}&token=${encryptedEmail}`);
+            sendMail(email, "Verify Email", `<a href="${process.env.APP_URL}/api/v1/auth/verify?email=${email}&token=${encryptedEmail}"> Verify </a>`);
+
             return res.status(200).json({
                 success: true, 
                 data: savedAccount
@@ -75,6 +84,29 @@ export const authController = {
         } catch (error) {
             console.error({ success: false, data: error });
             return res.status(500).json({ success: false, error: error.message });
+        }
+    },
+
+    /// Verify
+    verify: async (req, res) => {
+        console.log("1");
+        if(req.query.email === decrypt(req.query.token)){
+            console.log("2");
+            const account = await Account.findOne({ email: encrypt(req.query.email)});
+            if(account){
+                account.verify = new Date();
+                // Save the updated user
+                console.log("3");
+                const updatedAccount = await account.save();
+                return res.status(200).json({
+                    success : true, 
+                    data : updatedAccount
+                });
+            }else{
+                return res.status(500).json("ERROR UPDATE VERIFY!!!");
+            }
+        }else{
+            return res.status(404).json("VERIFY FAIL!!!");
         }
     },
 

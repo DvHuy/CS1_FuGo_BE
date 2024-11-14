@@ -1,5 +1,7 @@
 import User from "../models/User.js";
 import { encrypt, decrypt } from "../security/encryption.js";
+import cloudinaryInstance from 'cloudinary';
+const cloudinary = cloudinaryInstance.v2; 
 
 export const userController = {
     // Get user by id 
@@ -56,10 +58,15 @@ export const userController = {
     },
 
     // Insert User
-    insertUser : async (req, res) => {
+    insertUser: async (req, res) => {
+        let fileData;
         try {
-            const { accountId, username, birthday, gender, status_to_go, country, address, height, weight, user_img } = req.body;
-    
+            fileData = req.file;
+            console.log(fileData);
+
+            const { accountId, username, birthday, gender, status_to_go, country, address, height, weight } = req.body;
+            const user_img = fileData?.path;
+
             // creating a new User object
             const userData = {
                 accountId, 
@@ -68,29 +75,41 @@ export const userController = {
                 gender, 
                 status_to_go, 
                 country, 
-                address : encrypt(address), 
+                address: encrypt(address), 
                 height, 
                 weight, 
-                user_img : encrypt(user_img)
-            }
+                user_img
+            };
 
             const user = new User(userData);
-    
+        
             // saving the new User
             const savedUser = await user.save();
-    
+
             return res.status(200).json({
-                success: true, data: savedUser
+                success: true, 
+                data: savedUser
             });
         } catch (error) {
             console.error({ success: false, data: error });
+        
+            // Delete the image from Cloudinary if there was an error
+            if (fileData && fileData.filename) {
+                await cloudinary.uploader.destroy(fileData.filename);
+            }
+
             return res.status(500).json({ success: false, error: error.message });
         }
     },
 
+
     // Update user 
     updateUser : async (req, res) => {
+        let fileData;
         try {
+            fileData = req.file;
+            console.log(fileData);
+
             const { username, birthday, gender, status_to_go, country, address, height, weight } = req.body;
             // Find the user by ID
             const user = await User.findOne( req.params.accountId);
@@ -106,6 +125,7 @@ export const userController = {
             user.address = address ? encrypt(address) : user.address;  // Encrypting address if provided
             user.height = height || user.height;
             user.weight = weight || user.weight;
+            user.user_img = fileData?.path || user.user_img;
             // Save the updated user
             const updatedUser = await user.save();
             return res.status(200).json({
@@ -113,6 +133,10 @@ export const userController = {
             });
             
         } catch (error) {
+            // Delete the image from Cloudinary if there was an error
+            if (fileData && fileData.filename) {
+                await cloudinary.uploader.destroy(fileData.filename);
+            }
             return res.status(500).json(error);
         }
     }

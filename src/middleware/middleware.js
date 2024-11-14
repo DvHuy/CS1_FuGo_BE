@@ -24,8 +24,8 @@ export const middlewareController = {
         }
     },
 
-    // Verify token and allow creating user/partner only if admin or the logged-in user 
-    verifyTokenAndCreateUserOrPartner: (req, res, next) => {
+    // Verify token and allow create, update, get user/partner only if admin or the logged-in user 
+    verifyTokenAndCreateAndUpdateUserOrPartnerInfo: (req, res, next) => {
         middlewareController.verifyToken(req, res, async () => {
             const loggedInAccountId = req.account.accountId;
 
