@@ -48,8 +48,8 @@ export const applyJobCV = async (req, res) => {
 
 export const jobController = {
   getSingleJob: async (req, res) => {
+    const id = req.params.id;
     try {
-      const id = req.params.id;
       const job = await Job.findById(id);
       res.status(200).json({ success: true, data: job });
     } catch (error) {
@@ -116,11 +116,15 @@ export const jobController = {
     }
   },
   getAllJobs: async (req, res) => {
+    const page = parseInt(req.query.page);
     try {
-      const jobs = await Job.find({});
+      const jobs = await Job.find({}).skip(page * 8).limit(8);
+  
+      const jobCount = await Job.estimatedDocumentCount()
       res.status(200).json({
         success: true,
         count: jobs.length,
+        jobCount: jobCount,
         message: "Successfull",
         data: jobs,
       });
