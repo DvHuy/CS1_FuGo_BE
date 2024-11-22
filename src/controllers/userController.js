@@ -7,15 +7,18 @@ export const userController = {
     // Get user by id 
     getUserByAccountId : async (req, res) => {
         try {
-            const user = await User.findOne(req.params.accountId);
+            const user = await User.findOne({ accountId : req.params.accountId });
+            console.log(user);
             if (!user) {
                 return res.status(404).json({ success: false, message: "User not found" });
             }
             // Decrypt the address field before sending the response
             const decryptedAddress = decrypt(user.address);
-            const decryptedUserImage = decrypt(user.user_img);
+            if(user.user_img){
+                const decryptedUserImage = decrypt(user.user_img);
+                user.user_img = decryptedUserImage;
+            }
             user.address = decryptedAddress;
-            user.user_img = decryptedUserImage;
 
             return res.status(200).json({data : user});
         } catch (error) {

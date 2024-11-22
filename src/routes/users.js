@@ -9,15 +9,15 @@ const router = Router();
 router.get("/", middlewareController.verifyTokenAndAdminAuth_JustAdmin, userController.getAllUser);
 
 // Get user by account id
-router.get('/:id', middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, userController.getUserByAccountId);
+router.get("/:accountId", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, userController.getUserByAccountId);
 
 // Delete user 
-router.delete("/delete/:id", middlewareController.verifyTokenAndAdminAuth, userController.deleteUser);
+router.delete("/delete/:accountId", middlewareController.verifyTokenAndAdminAuth, userController.deleteUser);
 
 // Insert user 
 router.post("/insert", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, uploadCloud.single('user_img'), userController.insertUser);
 
 // Update user by account id 
-router.post("/update/:id", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, uploadCloud.single('user_img'), userController.updateUser);
+router.post("/update/:accountId", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, uploadCloud.single('user_img'), userController.updateUser);
 
 export default router;

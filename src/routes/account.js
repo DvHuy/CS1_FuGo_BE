@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { accountController } from "../controllers/account.controller.js";
-import { middlewareController } from "../controllers/middleware.controller.js";
+import { accountController } from "../controllers/accountController.js";
+import { middlewareController } from "../middleware/middleware.js";
 const router = Router();
 
 // Get all account

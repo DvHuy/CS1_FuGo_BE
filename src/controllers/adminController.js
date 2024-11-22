@@ -1,54 +1,25 @@
-import User from "../models/User.js";
-import { decrypt, encrypt } from "../security/encryption.js";
+import Admin from "../models/Admin.js";
 
-
-export const userController = {
+export const adminController = {
     // Get user by id 
-    getUserByAccountId : async (req, res) => {
+    getAdminByAccountId : async (req, res) => {
         try {
-            const user = await User.findOne(req.params.accountId);
-            if (!user) {
-                return res.status(404).json({ success: false, message: "User not found" });
+            const admin = await Admin.findOne(req.params.accountId);
+            if (!admin) {
+                return res.status(404).json({ success: false, message: "Admin not found" });
             }
-            // Decrypt the address field before sending the response
-            const decryptedAddress = decrypt(user.address);
-            const decryptedUserImage = decrypt(user.user_img);
-            user.address = decryptedAddress;
-            user.user_img = decryptedUserImage;
-
-            return res.status(200).json({data : user});
+            return res.status(200).json({data : admin});
         } catch (error) {
             return res.status(500).json(error);
         }
     },
     
-    // Get all user 
-    getAllUser : async (req, res) => {
+    // Delete admin by account_id
+    deleteAdmin : async (req, res) => {
         try {
-            const users = await User.find();
-            if (!users || users.length === 0) {
-                return res.status(404).json({ success: false, message: "No users found" });
-            }
-    
-            // Decrypt the address field for each user
-            const decryptedUsers = users.map(user => {
-                user.address = decrypt(user.address);
-                user.user_img = decrypt(user.user_img);
-                return user;
-            });
-            
-            return res.status(200).json({data : decryptedUsers});
-        } catch (error) {
-            return res.status(500).json(error);
-        }
-    },
-
-    // Delete user by account_id
-    deleteUser : async (req, res) => {
-        try {
-            const user = await User.findOneAndDelete(req.params.account_id);
-            if (!user) {
-                return res.status(404).json({ success: false, message: "User not found" });
+            const admin = await Admin.findOneAndDelete(req.params.account_id);
+            if (!admin) {
+                return res.status(404).json({ success: false, message: "Admin not found" });
             }
             return res.status(200).json({ success: true, message: "Delete successfully!" });
         } catch (error) {
@@ -56,32 +27,26 @@ export const userController = {
         }
     },
 
-    // Insert User
-    insertUser : async (req, res) => {
+    // Create Admin
+    createAdmin : async (req, res) => {
         try {
-            const { accountId, username, birthday, gender, status_to_go, country, address, height, weight, user_img } = req.body;
+            const { accountId, full_name, status, last_login } = req.body;
     
-            // creating a new User object
-            const userData = {
+            // creating a new admin object
+            const adminData = {
                 accountId, 
-                username, 
-                birthday, 
-                gender, 
-                status_to_go, 
-                country, 
-                address : encrypt(address), 
-                height, 
-                weight, 
-                user_img : encrypt(user_img)
+                full_name, 
+                status, 
+                last_login
             }
 
-            const user = new User(userData);
+            const admin = new Admin(adminData);
     
-            // saving the new User
-            const savedUser = await user.save();
+            // saving the new News
+            const savedAdmin = await admin.save();
     
             return res.status(200).json({
-                success: true, data: savedUser
+                success: true, data: savedAdmin
             });
         } catch (error) {
             console.error({ success: false, data: error });
@@ -89,28 +54,24 @@ export const userController = {
         }
     },
 
-    // Update user 
-    updateUser : async (req, res) => {
+    // Update admin 
+    updateAdmin : async (req, res) => {
         try {
-            const { username, birthday, gender, status_to_go, country, address, height, weight } = req.body;
-            // Find the user by ID
-            const user = await User.findOne( req.params.accountId);
-            if (!user) {
-               return res.status(404).json({ success: false, message: "User not found" });
+            const { accountId, full_name, status, last_login } = req.body;
+            // Find the admin by ID
+            const admin = await Admin.findOne(req.params.accountId);
+            if (!admin) {
+               return res.status(404).json({ success: false, message: "Admin not found" });
             }
-            // Update the user's information
-            user.username = username || user.username;
-            user.birthday = birthday || user.birthday;
-            user.gender = gender || user.gender;
-            user.status_to_go = status_to_go || user.status_to_go;
-            user.country = country || user.country;
-            user.address = address ? encrypt(address) : user.address;  // Encrypting address if provided
-            user.height = height || user.height;
-            user.weight = weight || user.weight;
+            // Update the admin's information
+            admin.full_name = full_name || admin.full_name;
+            admin.status = status || admin.status;
+            admin.last_login = last_login || admin.last_login;
+            
             // Save the updated user
-            const updatedUser = await user.save();
+            const updatedAdmin = await admin.save();
             return res.status(200).json({
-               success: true, data: updatedUser
+               success: true, data: updatedAdmin
             });
             
         } catch (error) {
