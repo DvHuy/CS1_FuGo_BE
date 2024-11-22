@@ -145,169 +145,142 @@ export const authController = {
     );
   },
 
-//   // Login
-//   loginAccount: async (req, res) => {
-//     try {
-//       const { email, phone, password, Role } = req.body;
+  //   // Login
+  //   loginAccount: async (req, res) => {
+  //     try {
+  //       const { email, phone, password, Role } = req.body;
 
-//       // Kiểm tra nếu cả email và phone đều bị thiếu
-//       if (!email && !phone) {
-//         return res.status(400).json({
-//           success: false,
-//           message: "Either email or phone is required",
-//         });
-//       }
+  //       // Kiểm tra nếu cả email và phone đều bị thiếu
+  //       if (!email && !phone) {
+  //         return res.status(400).json({
+  //           success: false,
+  //           message: "Either email or phone is required",
+  //         });
+  //       }
 
-//       /// email
-//       let encryptedEmail;
-//       if (email) {
-//         encryptedEmail = encrypt(email);
-//         const account = await Account.findOne({ email: encryptedEmail });
-//         if (!account) {
-//           return res.status(404).json("wrong account");
-//         }
-//         const validPassword = await bcrypt.compare(
-//           req.body.password,
-//           account.password
-//         );
-//         if (!validPassword) {
-//           return res.status(404).json("wrong password or email");
-//         }
+  //       /// email
+  //       let encryptedEmail;
+  //       if (email) {
+  //         encryptedEmail = encrypt(email);
+  //         const account = await Account.findOne({ email: encryptedEmail });
+  //         if (!account) {
+  //           return res.status(404).json("wrong account");
+  //         }
+  //         const validPassword = await bcrypt.compare(
+  //           req.body.password,
+  //           account.password
+  //         );
+  //         if (!validPassword) {
+  //           return res.status(404).json("wrong password or email");
+  //         }
 
-//         if (account && validPassword) {
-//           // accessToken
-//           const accessToken = authController.generateAccessToken(account);
+  //         if (account && validPassword) {
+  //           // accessToken
+  //           const accessToken = authController.generateAccessToken(account);
 
-//           // refreshToken
-//           const refreshToken = authController.generateRefreshToken(account);
-//           refreshTokens.push(refreshToken);
+  //           // refreshToken
+  //           const refreshToken = authController.generateRefreshToken(account);
+  //           refreshTokens.push(refreshToken);
 
-//           const { password, ...others } = account._doc;
+  //           const { password, ...others } = account._doc;
 
-//           // cookies
-//           res.cookie("refreshToken", refreshToken, {
-//             httpOnly: true,
-//             secure: false,
-//             path: "/",
-//             sameSite: "strict",
-//           });
+  //           // cookies
+  //           res.cookie("refreshToken", refreshToken, {
+  //             httpOnly: true,
+  //             secure: false,
+  //             path: "/",
+  //             sameSite: "strict",
+  //           });
 
-//           return res
-//             .status(200)
-//             .json({ data: others, accessToken: accessToken });
-//         }
-//       }
+  //           return res
+  //             .status(200)
+  //             .json({ data: others, accessToken: accessToken });
+  //         }
+  //       }
 
-//       /// phone
-//       let encryptedPhone;
-//       if (phone) {
-//         encryptedPhone = encrypt(phone);
-//         const account = await Account.findOne({ phone: encryptedPhone });
-//         if (!account) {
-//           return res.status(404).json("wrong account");
-//         }
-//         const validPassword = await bcrypt.compare(
-//           req.body.password,
-//           account.password
-//         );
+  //       /// phone
+  //       let encryptedPhone;
+  //       if (phone) {
+  //         encryptedPhone = encrypt(phone);
+  //         const account = await Account.findOne({ phone: encryptedPhone });
+  //         if (!account) {
+  //           return res.status(404).json("wrong account");
+  //         }
+  //         const validPassword = await bcrypt.compare(
+  //           req.body.password,
+  //           account.password
+  //         );
 
-//     },
+  //     },
 
-    // Login 
-    loginAccount : async(req,res) => {
-        try {
-            const { email, phone, password, Role } = req.body;
+  // Login
+  loginAccount: async (req, res) => {
+    try {
+      const { email, phone, password, Role } = req.body;
 
-            // Kiểm tra nếu cả email và phone đều bị thiếu
-            if (!email && !phone) {
-                return res.status(400).json({ 
-                    success: false, 
-                    message: "Either email or phone is required" 
-                });
-            }
+      // Kiểm tra nếu cả email và phone đều bị thiếu
+      if (!email && !phone) {
+        return res.status(400).json({
+          success: false,
+          message: "Either email or phone is required",
+        });
+      }
 
+      /// email
+      let encryptedEmail;
+      if (email) {
+        encryptedEmail = encrypt(email);
+        const account = await Account.findOne({ email: encryptedEmail });
+        if (!account) {
+          return res.status(404).json("wrong account");
+        }
+        const validPassword = await bcrypt.compare(
+          req.body.password,
+          account.password
+        );
+        if (!validPassword) {
+          return res.status(404).json("wrong password or email");
+        }
 
-            /// email 
-            let encryptedEmail;
-            if(email){
-                encryptedEmail = encrypt(email);
-                const account = await Account.findOne({email : encryptedEmail}) 
-                if(!account){
-                    return res.status(404).json("wrong account");
-                }
-                const validPassword = await bcrypt.compare(
-                    req.body.password,
-                    account.password
-                )
-                if(!validPassword){
-                    return res.status(404).json("wrong password or email")
-                }
+        if (account && validPassword) {
+          // accessToken
+          const accessToken = authController.generateAccessToken(account);
 
-                if(account && validPassword){
-                    // accessToken 
-                    const accessToken = authController.generateAccessToken(account);
+          // refreshToken
+          const refreshToken = authController.generateRefreshToken(account);
+          refreshTokens.push(refreshToken);
 
-                    // refreshToken
-                    const refreshToken = authController.generateRefreshToken(account);
-                    refreshTokens.push(refreshToken);
+          const { password, ...others } = account._doc;
 
-                    const {password, ...others} = account._doc;
-                    
-                    // cookies
-                    res.cookie("refreshToken", refreshToken, {
-                       httpOnly : true,
-                       secure : false,
-                       path : "/",
-                       sameSite : "strict",
-                    })
-                    /// ??
-                    return res.status(200).json({data : others, accessToken: accessToken});
-                }
-            }
+          // cookies
+          res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict",
+          });
+          /// ??
+          return res
+            .status(200)
+            .json({ data: others, accessToken: accessToken });
+        }
+      }
 
-            /// phone 
-            let encryptedPhone;
-            if(phone){
-                encryptedPhone = encrypt(phone);
-                const account = await Account.findOne({phone : encryptedPhone}) 
-                if(!account){
-                    return res.status(404).json("wrong account");
-                }
-                const validPassword = await bcrypt.compare(
-                    req.body.password,
-                    account.password
-                )
-
-                if(!validPassword){
-                    return res.status(404).json("wrong password or phone number")
-                }
-
-                if(account && validPassword){
-                    const accessToken = authController.generateAccessToken(account);
-
-                    // refreshToken
-                    const refreshToken = authController.generateRefreshToken(account);
-                    refreshTokens.push(refreshToken);
-
-                    // cookies
-                    res.cookie("refreshToken", refreshToken, {
-                        httpOnly : true,
-                        secure : false,
-                        path : "/",
-                        sameSite : "strict",
-                     })
-
-                    const {password, ...others} = account._doc;
-                    return res.status(200).json({data : others, accessToken: accessToken});
-                }
-            }
-        } catch (error) {
-            return res.status(500).json(error);
-
+      /// phone
+      let encryptedPhone;
+      if (phone) {
+        encryptedPhone = encrypt(phone);
+        const account = await Account.findOne({ phone: encryptedPhone });
+        if (!account) {
+          return res.status(404).json("wrong account");
+        }
+        const validPassword = await bcrypt.compare(
+          req.body.password,
+          account.password
+        );
 
         if (!validPassword) {
           return res.status(404).json("wrong password or phone number");
-
         }
 
         if (account && validPassword) {
