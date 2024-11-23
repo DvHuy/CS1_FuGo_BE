@@ -2,34 +2,44 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
 const jobCVSchema = new Schema({
-  job_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Job",
-    required: true,
-  },
-  certificate: {
+  jobId: {
     type: String,
     required: true,
   },
-  major: {
+  accountId:{
     type: String,
     required: true,
   },
-  gpa: {
+  fullName: {
     type: String,
     required: true,
   },
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+  gender: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  language: {
+    type: String,
+    required: true,
+  },
+  education: {
+    type: String,
+    required: true,
+  },
+  bio: {
+    type: String,
     required: true,
   },
   cv_img: {
     type: String,
-  },
-  description: {
-    type: String,
-    required: true,
   },
   created_at: {
     type: Date,
