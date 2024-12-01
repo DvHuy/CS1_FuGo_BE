@@ -1,4 +1,7 @@
 
+import Job from "../models/Job.js";
+import JobApplication from "../models/JobApplication.js";
+import JobCV from "../models/JobCV.js";
 import Partner from "../models/Partner.js";
 import { encrypt, decrypt } from "../security/encryption.js";
 
@@ -104,6 +107,36 @@ export const partnerController = {
         } catch (error) {
             return res.status(500).json(error);
         }
-    }
+    },
 
+    //Get the list of posted jobs
+    getListPostedJobs: async(req, res) => {
+        try { 
+            const {partnerId} = req.body;
+            const jobs = await Job.find({partnerId: partnerId}, {title: 1, _id: 1});
+            return res.status(200).json({success: true, data: jobs});
+        } catch (error) {
+            return res.status(500).json(error);
+        }
+    }
+    ,
+    getListJobCVs: async(req, res) => {        
+        try {
+            const {jobId} = req.body;
+            const jobCVs = await JobCV.find({ jobId: jobId });            
+            return res.status(200).json({success: true, data: jobCVs});
+        } catch (error) {
+            return res.status(500).json(error);
+        }
+    }
+    ,
+    getJobDetailCV: async(req, res) => {
+        try {
+            const {cvId} = req.body;
+            const jobCV = await JobCV.findOne({_id: cvId });
+            return res.status(200).json({success: true, data: jobCV});
+        } catch (error) {
+            return res.status(500).json(error);
+        }
+    }
 }

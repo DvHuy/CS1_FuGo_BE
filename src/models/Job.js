@@ -41,7 +41,23 @@ const jobSchema = new Schema({
   },
   cvApply: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Job_CVs", // Ensure this references the correct Job_CVs model
+    ref: "Job_CVs",
+  },
+  partnerId: {
+    type: String,
+    required: true,
+  },
+  partnerPhone: {
+    type: String,
+    required: true,
+  },
+  partnerEmail: {
+    type: String,
+    required: true,
+  },
+  image:{
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
