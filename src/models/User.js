@@ -2,19 +2,24 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-  // accountId: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Account",
-  //   required: true, 
-  // },
   accountId: {
-    type: String,
-    unique: true,
-    required: true,
+    type: Schema.Types.ObjectId,
+    ref: "Account",
+    required: true, 
   },
+  // accountId: {
+  //   type: String,
+  //   unique: true,
+  //   required: true,
+  // },
   username: {
     type: String,
     maxlength: 50,
+    sparse: true,
+  },
+  phone: {
+    type: String,
+    unique: true,
     sparse: true,
   },
   birthday: {
@@ -23,15 +28,15 @@ const UserSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    required: true,
+    required: false,
   },
   status_to_go: {
     type: String,
-    required: true,
+    default: "Available",
   },
   country: {
     type: String,
-    required: true,
+    default: "Vietnam",
   },
   address: {
     type: String,
@@ -39,15 +44,22 @@ const UserSchema = new mongoose.Schema({
   },
   height: {
     type: String,
-    required: true,
+    maxlength: 10,
+    default: null,
   },
   weight: {
     type: String,
-    required: true,
+    maxlength: 10,
+    default: null,
   },
+  bio: {
+    type: String,
+    maxlength: 100,
+    default: null,
+  },  
   user_img: {
     type: String,
-    sparse: true,
+    default: "default.jpg",
   },
 }, {
   timestamps: true,
