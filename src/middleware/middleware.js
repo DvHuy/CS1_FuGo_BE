@@ -8,7 +8,7 @@ dotenv.config();
 export const middlewareController = {
     /// verify token
     verifyToken : (req, res, next) => {
-        const token = req.headers.token;
+        const token = req.headers.authorization;
         if(token){
             const accessToken = token.split(" ")[1];
             jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, account) => {
@@ -25,7 +25,7 @@ export const middlewareController = {
     },
 
     // Verify token and allow create, update, get user/partner only if admin or the logged-in user 
-    verifyTokenAndCreateAndUpdateUserOrPartnerInfo: (req, res, next) => {
+     verifyTokenAndCreateAndUpdateUserOrPartnerInfo: (req, res, next) => {
         middlewareController.verifyToken(req, res, async () => {
             const loggedInAccountId = req.account.accountId;
 
