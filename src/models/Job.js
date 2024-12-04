@@ -22,7 +22,7 @@ const jobSchema = new Schema({
     type: String,
   },
   experience: {
-    type: Number,
+    type: String,
   },
   profession: {
     type: String,
@@ -34,10 +34,10 @@ const jobSchema = new Schema({
     type: String,
   },
   minSalary: {
-    type: Number,
+    type: String,
   },
   maxSalary: {
-    type: Number,
+    type: String,
   },
   cvApply: {
     type: mongoose.Schema.Types.ObjectId,

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { partnerController } from "../controllers/partner.controller.js";
-import { middlewareController } from "../controllers/middleware.controller.js";
+import { partnerController } from "../controllers/partnercontroller.js";
+import { middlewareController } from "../middleware/middleware.js";
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.get('/:id', middlewareController.verifyTokenAndAdminAuth, partnerControll
 router.delete("/delete/:id", middlewareController.verifyTokenAndAdminAuth, partnerController.deletePartner);
 
 // Insert user 
-router.post("/insert", middlewareController.verifyTokenAndCreateUserOrPartner, partnerController.insertPartner);
+router.post("/insert", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, partnerController.insertPartner);
 
 // Update user by account id 
 router.post("/update/:id", middlewareController.verifyTokenAndAdminAuth, partnerController.updatePartner);

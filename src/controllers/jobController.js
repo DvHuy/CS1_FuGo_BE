@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 export const applyJobCV = async (req, res) => {
   try {
@@ -47,9 +47,20 @@ export const applyJobCV = async (req, res) => {
 };
 
 export const jobController = {
-  getSingleJob: async (req, res) => {
-    const id = req.params.id;
+  // get all job
+  getAllJob : async (req, res) => {
     try {
+        const jobs = await Job.find();
+        return res.status(200).json({data : jobs});
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+},
+
+  // get single job
+  getSingleJob: async (req, res) => {
+    try {
+      const id = req.params.id;
       const job = await Job.findById(id);
       res.status(200).json({ success: true, data: job });
     } catch (error) {
@@ -64,42 +75,32 @@ export const jobController = {
   getJobBySearch: async (req, res) => {
     // Điều kiện tìm kiếm động, chỉ thêm nếu người dùng có nhập giá trị
     const searchConditions = {};
-    const {
-      title,
-      country,
-      minSalary,
-      maxSalary,
-      educationalLevel,
-      profession,
-      experience,
-    } = req.body;
-    if (title) {
-      searchConditions.title = new RegExp(title, "i");
+
+    if (req.query.country) {
+      searchConditions.country = new RegExp(req.query.country, "i");
     }
-    if (country) {
-      searchConditions.country = new RegExp(country, "i");
-    }
-    if (minSalary) {
-      searchConditions.minSalary = {
-        $gte: parseInt(minSalary),
+    if (req.query.minSalary && req.query.maxSalary) {
+      searchConditions.salary = {
+        $gte: parseInt(req.query.minSalary),
+        $lte: parseInt(req.query.maxSalary),
       };
     }
-    if (maxSalary) {
-      searchConditions.maxSalary = {
-        $lte: parseInt(maxSalary),
-      };
+    if (req.query.profession) {
+      searchConditions.profession = new RegExp(req.query.profession, "i");
     }
-    if (profession) {
-      searchConditions.profession = new RegExp(profession, "i");
+    if (req.query.educationLevel) {
+      searchConditions.educationLevel = new RegExp(
+        req.query.educationLevel,
+        "i"
+      );
     }
-    if (educationalLevel) {
-      searchConditions.educationalLevel = new RegExp(educationalLevel, "i");
+    if (req.query.industry) {
+      searchConditions.industry = new RegExp(req.query.industry, "i");
     }
-    if (experience) {
-      searchConditions.experience = {
-        $eq: parseInt(experience),
-      }
+    if (req.query.experience) {
+      searchConditions.experience = new RegExp(req.query.experience, "i");
     }
+
     try {
       const jobs = await Job.find(searchConditions);
 
@@ -112,26 +113,6 @@ export const jobController = {
       res.status(404).json({
         success: false,
         message: "No jobs found",
-      });
-    }
-  },
-  getAllJobs: async (req, res) => {
-    const page = parseInt(req.query.page);
-    try {
-      const jobs = await Job.find({}).skip(page * 8).limit(8);
-  
-      const jobCount = await Job.estimatedDocumentCount()
-      res.status(200).json({
-        success: true,
-        count: jobs.length,
-        jobCount: jobCount,
-        message: "Successfull",
-        data: jobs,
-      });
-    } catch (error) {
-      res.status(404).json({
-        success: false,
-        message: "Not found",
       });
     }
   },
