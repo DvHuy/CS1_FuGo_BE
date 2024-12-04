@@ -18,6 +18,6 @@ router.delete("/delete/:accountId", middlewareController.verifyTokenAndAdminAuth
 router.post("/insert", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, uploadCloud.single('user_img'), userController.insertUser);
 
 // Update user by account id 
-router.post("/update/:accountId", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, uploadCloud.single('user_img'), userController.updateUser);
+router.put("/update/:accountId", middlewareController.verifyTokenAndCreateAndUpdateUserOrPartnerInfo, uploadCloud.single('user_img'), userController.updateUser);
 
 export default router;
