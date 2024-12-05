@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 import {Schema} from "mongoose";
 
 const jobApplicationSchema = new Schema({
-    job_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Job",
-        required: true,
-    },
     job_cv_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "JobCV",
@@ -14,8 +9,8 @@ const jobApplicationSchema = new Schema({
     },
     status:{
         type: String,
-        enum: ["Pending", "Accepted", "Declined"],
-        default: "Pending"
+        enum: ["Đang duyệt", "Chấp nhận", "Từ chối"],
+        default: "Đang duyệt"
     },
     applied_at: {
         type: Date,

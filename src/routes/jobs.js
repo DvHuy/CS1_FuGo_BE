@@ -1,5 +1,5 @@
 import express from "express";
-import {jobController} from "../controllers/jobController.js"
+import {applyJobCV, jobController, upload} from "../controllers/jobController.js"
 
 //sau này import middleware
 
@@ -13,5 +13,8 @@ router.get("/",jobController.getAllJob);
 
 // get single job
 router.get("/:id",jobController.getSingleJob);
+
+//apply CV
+router.post("/apply", upload.single("image"), applyJobCV);
 
 export default router;

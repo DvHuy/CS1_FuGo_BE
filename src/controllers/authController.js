@@ -14,6 +14,7 @@ export const authController = {
         try {
             const { email, phone, password, role } = req.body;
 
+
             // Kiểm tra nếu cả email và phone đều bị thiếu
             if (!email && !phone) {
                 return res.status(400).json({ 
