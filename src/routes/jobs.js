@@ -6,11 +6,10 @@ import {applyJobCV, jobController, upload} from "../controllers/jobController.js
 const router = express.Router();
 
 //search job by conditions
-router.post("/search/getJobBySearch", jobController.getJobBySearch);
+router.get("/search/getJobBySearch", jobController.getJobBySearch);
 
-//get all job
-
-router.get("/", jobController.getAllJobs);
+// get all job
+router.get("/",jobController.getAllJob);
 
 // get single job
 router.get("/:id",jobController.getSingleJob);
