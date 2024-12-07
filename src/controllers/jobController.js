@@ -28,8 +28,6 @@ export const applyJobCV = async (req, res) => {
       education,
       bio,
     } = req.body;
-    console.log(req.body);
-
 
     const newJobCV = new JobCV({
       jobId: jobId,
@@ -43,9 +41,9 @@ export const applyJobCV = async (req, res) => {
       bio: bio,
       cv_img: req.file ? req.file.filename : "",
     });
-    
+
     await newJobCV.save();
-    
+
     const newJobApplication = new JobApplication({
       job_cv_id: newJobCV._id,
     });

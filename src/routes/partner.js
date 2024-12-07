@@ -32,4 +32,13 @@ router.post("/job/view/detail", partnerController.getListJobCVs);
 //Get candidate information 
 router.post("/job/view/detail/candidate", partnerController.getJobDetailCV);
 
+//Get list CVs have reviewed 
+router.get("/job/review", partnerController.getProfileReviewed);
+
+//Check the CV
+router.put("/job/view/detail/candidate/review", partnerController.reviewCV);
+
+//send mail for user
+router.post("/job/review/send-email", partnerController.sendMailForUser);
+
 export default router;
