@@ -6,7 +6,6 @@ import connectToMongoDB from "./src/db/connectToMongoDB.js";
 
 import partnerRouter from "./src/routes/partner.js";
 import userRouter from "./src/routes/users.js";
-import partnerRouter from "./src/routes/partner.js";
 import adminRouter from "./src/routes/admin.js";
 import jobRouter from "./src/routes/jobs.js";
 

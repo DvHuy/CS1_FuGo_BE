@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { Schema } from "mongoose";
 const UserSchema = new mongoose.Schema({
   accountId: {
     type: Schema.Types.ObjectId,

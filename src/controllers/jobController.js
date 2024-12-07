@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+export const upload = multer({ storage: storage });
 
 export const applyJobCV = async (req, res) => {
   try {
@@ -83,40 +83,46 @@ export const jobController = {
     }
   },
 
-  //Searching Job
+   //Searching Job
   getJobBySearch: async (req, res) => {
     // Điều kiện tìm kiếm động, chỉ thêm nếu người dùng có nhập giá trị
     const searchConditions = {};
-
-    if (req.query.country) {
-      searchConditions.country = new RegExp(req.query.country, "i");
+    const {
+      title,
+      country,
+      minSalary,
+      maxSalary,
+      educationalLevel,
+      profession,
+      experience,
+    } = req.body;
+    if (title) {
+      searchConditions.title = new RegExp(title, "i");
     }
-    if (req.query.minSalary && req.query.maxSalary) {
-      searchConditions.salary = {
-        $gte: parseInt(req.query.minSalary),
-        $lte: parseInt(req.query.maxSalary),
+    if (country) {
+      searchConditions.country = new RegExp(country, "i");
+    }
+    if (minSalary) {
+      searchConditions.minSalary = {
+        $gte: parseInt(minSalary),
       };
     }
-    if (req.query.profession) {
-      searchConditions.profession = new RegExp(req.query.profession, "i");
+    if (maxSalary) {
+      searchConditions.maxSalary = {
+        $lte: parseInt(maxSalary),
+      };
     }
-    if (req.query.educationLevel) {
-      searchConditions.educationLevel = new RegExp(
-        req.query.educationLevel,
-        "i"
-      );
+    if (profession) {
+      searchConditions.profession = new RegExp(profession, "i");
     }
-    if (req.query.industry) {
-      searchConditions.industry = new RegExp(req.query.industry, "i");
+    if (educationalLevel) {
+      searchConditions.educationalLevel = new RegExp(educationalLevel, "i");
     }
-
     if (experience) {
       searchConditions.experience = {
         $eq: parseInt(experience),
       };
-
     }
-
     try {
       const jobs = await Job.find(searchConditions);
 
@@ -141,6 +147,7 @@ export const jobController = {
         .limit(8);
 
       const jobCount = await Job.estimatedDocumentCount();
+      
       res.status(200).json({
         success: true,
         count: jobs.length,
