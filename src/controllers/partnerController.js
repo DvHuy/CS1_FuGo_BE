@@ -10,18 +10,19 @@ import { mailConfig } from "../config/mail.config.js";
 export const partnerController = {
   // Get partner by id
   getPartnerByAccountId: async (req, res) => {
+    const { id } = req.params;
     try {
-      const partner = await Partner.findOne(req.params.accountId);
-      if (!partner) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Partner not found" });
-      }
-      // Decrypt the address field before sending the response
-      const decryptedContactPhonePerson = decrypt(partner.contact_phone_person);
-      partner.contact_phone_person = decryptedContactPhonePerson;
+      const partner = await Partner.find({ accountId: id }, { contact_person : 1});
+      // if (!partner) {
+      //   return res
+      //     .status(404)
+      //     .json({ success: false, message: "Partner not found" });
+      // }
+      // // Decrypt the address field before sending the response
+      // const decryptedContactPhonePerson = decrypt(partner.contact_phone_person);
+      // partner.contact_phone_person = decryptedContactPhonePerson;
 
-      return res.status(200).json({ data: partner });
+      return res.status(200).json({success: true, data: partner });
     } catch (error) {
       return res.status(500).json(error);
     }
