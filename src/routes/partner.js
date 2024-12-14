@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", middlewareController.verifyTokenAndAdminAuth_JustAdmin, partnerController.getAllPartner);
 
 // Get user by account id
-router.get('/:id', middlewareController.verifyTokenAndAdminAuth, partnerController.getPartnerByAccountId);
+router.get('/:id', partnerController.getPartnerByAccountId);
 
 // Delete user 
 router.delete("/delete/:id", middlewareController.verifyTokenAndAdminAuth, partnerController.deletePartner);
