@@ -1,9 +1,11 @@
-
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 import { verify } from "crypto";
 import Admin from "../models/Admin.js";
 dotenv.config();
+
+// Store request time by accountId
+const requestTimestamps = new Map();
 
 export const middlewareController = {
     /// verify token
@@ -109,7 +111,37 @@ export const middlewareController = {
             }
 
             return res.status(403).json("You are not allowed to create this user");
-    });
-},
+        });
+    },
+
+    // Middleware verify token và giới hạn số lần request insert
+    verifyTokenAndRateLimitInsert: (req, res, next) => {
+        middlewareController.verifyToken(req, res, () => {
+            const accountId = req.account.id; 
+
+
+            // Nếu không có accountId, trả lỗi
+            if (!accountId) {
+                return res.status(400).json("Account ID is required.");
+            }
+
+            const currentTime = Date.now(); 
+
+            // Kiểm tra nếu accountId đã tồn tại trong bộ nhớ
+            if (requestTimestamps.has(accountId)) {
+                const lastRequestTime = requestTimestamps.get(accountId);
+
+                // Nếu thời gian từ lần request trước < 10 phút
+                if (currentTime - lastRequestTime < 10 * 60 * 1000) {
+                    return res.status(429).json("You can only insert once every 10 minutes.");
+                }
+            }
+
+            requestTimestamps.set(accountId, currentTime);
+            next();
+        });
+    },
+
+     
   
 }

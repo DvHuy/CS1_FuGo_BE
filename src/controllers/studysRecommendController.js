@@ -1,35 +1,35 @@
-import JobsRecommend from "../models/JobsRecommend.js";
+import StudysRecommend from "../models/StudysRecommend.js";
 import { redisServer } from '../services/redis.service.js'
 import axios from "axios";
 
-export const JobsRecommendController = {
-    // Get partner by id 
-    getJobsRecommend : async (req, res) => {
+export const StudysRecommendController = {
+    // Get job recommend by id 
+    getStudysRecommend : async (req, res) => {
         try {
             const { account_id } = req.body;
             // Tạo key Redis sử dụng account_id
-            const redisKey = `recommendJob:${account_id}`;
+            const redisKey = `recommendStudy:${account_id}`;
             console.log("Redis Key:", redisKey);
 
-            const jobsRecommend = await redisServer.getPromise(redisKey);
-            console.log("jos", jobsRecommend);
+            const studysRecommend = await redisServer.getPromise(redisKey);
+            console.log("studys", studysRecommend);
 
             return res.status(200).json({
                 success: true,
-                data: jobsRecommend
+                data: studysRecommend
             });
         } catch (error) {
             return res.status(500).json(error);
         }
     },
     
-    // Insert Partner
-    insertJobsRecommend : async (req, res) => {
+    // Insert Jobs Recommend
+    insertStudysRecommend : async (req, res) => {
         try {
-            const { selected_jobs, user_profile } = req.body;
+            const { selected_studys, user_profile } = req.body;
 
             // Kiểm tra dữ liệu đầu vào
-            if (!selected_jobs || !Array.isArray(selected_jobs) || selected_jobs.length === 0) {
+            if (!selected_studys || !Array.isArray(selected_studys) || selected_studys.length === 0) {
                 return res.status(400).json({ success: false, message: "Selected jobs data is missing or invalid" });
             }
 
@@ -37,12 +37,12 @@ export const JobsRecommendController = {
                 return res.status(400).json({ success: false, message: "User profile data is missing or invalid" });
             }
 
-            console.log("Selected jobs:", selected_jobs);
+            console.log("Selected studys:", selected_studys);
             console.log("User profile:", user_profile);
 
             // Gửi dữ liệu đến API khác
-            const response = await axios.post('http://127.0.0.1:5000/api/recommend/jobs', {
-                selected_jobs,
+            const response = await axios.post('http://127.0.0.1:6000/api/recommend/studys', {
+                selected_studys,
                 user_profile
             });
 
@@ -54,7 +54,7 @@ export const JobsRecommendController = {
             console.log("Extracted Account ID:", extractedAccountId);
             
             // Tạo key Redis sử dụng account_id
-            const redisKey = `recommendJob:${extractedAccountId}`;
+            const redisKey = `recommendStudy:${extractedAccountId}`;
             console.log("Redis Key:", redisKey);
 
             await redisServer.setPromise({

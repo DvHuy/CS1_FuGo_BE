@@ -98,9 +98,7 @@ export const getAllStudy = async (req,res) => {
     const page = parseInt(req.query.page);
 
     try {
-        const studies = await StudyAbroad.find({})
-        .skip(page * 8)
-        .limit(8);
+        const studies = await StudyAbroad.find({});
 
         res.status(200).json({
             success:true, 

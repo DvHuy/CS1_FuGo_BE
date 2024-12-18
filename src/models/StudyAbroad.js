@@ -5,35 +5,47 @@ const studyAbroadSchema = new Schema({
     title: {
         type: String,
         required: true,
-      },
-      description: {
+    },
+    description: {
         type: String,
-        required: true,
-      },
-      requirements: {
+    },
+    requirements: {
         type: String,
-        required: true,
-      },
-      duration: {
-          type: String,
-          required: true,
-      },
-      location: {
-          type: String,
-          required: true,
-      },
-      // cv_apply: {
-      //     type: mongoose.Types.ObjectId,
-      //     ref: "Study_abroad_CVs"
-      // },
-      createdAt: {
-          type: Date,
-          default: Date.now,
-      },
-        updatedAt: {
-          type: Date,
-          default: Date.now,
-      },
+    },
+    duration: {
+        type: String,
+    },
+    location: {
+        type: String,
+    },
+    country: {
+        type: String,
+        default: "Vietnam",
+    },
+    partner_name: {
+        type: String,
+    },
+    partner_phone: {
+        type: String,
+    },
+    partner_email: {
+        type: String,
+    },
+    image: {
+        type: String,
+    },
+    status: {
+        type: String,
+        default: "Available",
+    },
+    created_at: {
+        type: Date,
+        default: Date.now,
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 const StudyAbroad = mongoose.model("StudyAbroad", studyAbroadSchema);
