@@ -8,5 +8,5 @@ const router = Router();
 router.post("/insert", middlewareController.verifyTokenAndRateLimitInsert, JobsRecommendController.insertJobsRecommend);
 
 // Get recommend jobs 
-router.get("/", JobsRecommendController.getJobsRecommend);
+router.get("/:accountId", JobsRecommendController.getJobsRecommend);
 export default router;

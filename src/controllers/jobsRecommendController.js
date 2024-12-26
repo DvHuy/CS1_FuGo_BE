@@ -6,17 +6,16 @@ export const JobsRecommendController = {
     // Get partner by id 
     getJobsRecommend : async (req, res) => {
         try {
-            const { account_id } = req.body;
+            const accountId = req.params.accountId;
             // Tạo key Redis sử dụng account_id
-            const redisKey = `recommendJob:${account_id}`;
+            const redisKey = `recommendJob:${accountId}`;
             console.log("Redis Key:", redisKey);
 
             const jobsRecommend = await redisServer.getPromise(redisKey);
             console.log("jos", jobsRecommend);
 
             return res.status(200).json({
-                success: true,
-                data: jobsRecommend
+                jobsRecommend
             });
         } catch (error) {
             return res.status(500).json(error);
@@ -50,7 +49,7 @@ export const JobsRecommendController = {
             const recommendData = response.data;
 
             // Lấy account_id từ recommendData
-            const extractedAccountId = recommendData.account_id;
+            const extractedAccountId = recommendData.accountId;
             console.log("Extracted Account ID:", extractedAccountId);
             
             // Tạo key Redis sử dụng account_id
