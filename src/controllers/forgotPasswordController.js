@@ -11,15 +11,18 @@ export const forgotPasswordController = {
     sendResetLinkEmail : async (req, res) => {
         const {email} = req.body;
         if(!email) {
-            // Đường dẫn về lại trang nhập email
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields!!!"
+            });
         }else{
             // Mã hóa email trước khi kiểm tra
             let encryptedEmail;
                 encryptedEmail = encrypt(email); // Mã hóa email
                 const existingAccount = await Account.findOne({ email: encryptedEmail });
                 if (existingAccount) {
-                    console.log(`${process.env.APP_URL}/api/v1/auth/password/formReset?email=${email}&token=${encryptedEmail}`);
-                    sendMail(email, "Reset Password", `<a href="${process.env.APP_URL}/api/v1/auth/password/formReset?email=${email}&token=${encryptedEmail}"> Reset Password </a>`);
+                    console.log(`http://localhost:5173/forgot-password-step2?email=${email}&token=${encryptedEmail}`);
+                    sendMail(email, "Reset Password", `<a href="http://localhost:5173/forgot-password-step2?email=${email}&token=${encryptedEmail}"> Reset Password </a>`);
                     return res.status(200).json("Send email success");
                 }
         }
@@ -41,7 +44,10 @@ export const forgotPasswordController = {
         console.log(email , token, password);
 
         if(!email || !token || !password){
-            // Đường dẫn về lại trang nhập email
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields!!!"
+            });
         }else{
             if(email == decrypt(token)){
                 console.log('compare : true');
