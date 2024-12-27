@@ -131,12 +131,14 @@ export const getAllStudyPage = async (req,res) => {
             studycount: studyCount,
             message: "Successfull",
             data: studies,
+            studyCount: studyCount
         });
 
     } catch (error) {
+        console.log(error);
         res.status(404).json({
-            success:false,
-            message:"Not found",
+            success: false,
+            message: "Not found",
         });
     }
-};
+}
