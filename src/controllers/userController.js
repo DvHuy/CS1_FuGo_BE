@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Account from "../models/Account.js";
 import { encrypt, decrypt } from "../security/encryption.js";
 import cloudinaryInstance from "cloudinary";
 const cloudinary = cloudinaryInstance.v2;
@@ -8,6 +9,12 @@ export const userController = {
   getUserByAccountId: async (req, res) => {
     try {
       const user = await User.findOne({ accountId: req.params.accountId });
+      const account = await Account.findOne({ accountId: req.params.id });
+      // console.log("account.email before: ", account.email);
+      const decryptedAddress = decrypt(account.email);
+      account.email = decryptedAddress;
+      // console.log("account.email after: ", account.email);
+      let accountEmail = account.email;
       console.log(user);
       if (!user) {
         return res
@@ -15,7 +22,7 @@ export const userController = {
           .json({ success: false, message: "User not found" });
       }
       // Decrypt the address field before sending the response
-      // const decryptedAddress = decrypt(user.address);
+      // const decryptedAddress = decrypt(account.email);
       // if(user.user_img){
       //     const decryptedUserImage = decrypt(user.user_img);
       //     user.user_img = decryptedUserImage;
@@ -27,6 +34,7 @@ export const userController = {
         data: {
           accountId: user.accountId,
           username: user.username,
+          email: accountEmail,
           birthday: user.birthday,
           phone: user.phone,
           gender: user.gender,

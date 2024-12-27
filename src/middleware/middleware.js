@@ -8,7 +8,6 @@ dotenv.config();
 const requestTimestamps = new Map();
 
 export const middlewareController = {
-    /// verify token
     verifyToken : (req, res, next) => {
         const token1 = req.headers.authorization;
         const token2 = req.headers.token;
@@ -36,6 +35,19 @@ export const middlewareController = {
         else{
             return res.status(401).json("You 're not authenticated");
         }
+    },
+
+    // Verify token and allow only Admin or Partner to add jobs
+    verifyTokenAndAllowJobCreation: (req, res, next) => {
+        middlewareController.verifyToken(req, res, async () => {
+            const { role } = req.account;
+
+            if (role === "admin" || role === "partner") {
+                return next(); 
+            }
+
+            return res.status(403).json("Only admins or partners are allowed to add jobs.");
+        });
     },
 
     // Verify token and allow create, update, get user/partner only if admin or the logged-in user 

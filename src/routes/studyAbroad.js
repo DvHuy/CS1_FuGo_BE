@@ -17,7 +17,7 @@ router.put("/:id", verifyPartner, updateStudy);
 router.delete("/:id", verifyPartner, deleteStudy);
 
 // get single tour
-router.get("/:id",verifyUser, getSingleStudy);
+router.get("/:id", getSingleStudy);
 
 // get all tours by page
 router.get("/", getAllStudyPage);
