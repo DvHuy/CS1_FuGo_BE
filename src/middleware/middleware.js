@@ -10,9 +10,21 @@ const requestTimestamps = new Map();
 export const middlewareController = {
     /// verify token
     verifyToken : (req, res, next) => {
-        const token = req.headers.authorization;
-        if(token){
-            const accessToken = token.split(" ")[1];
+        const token1 = req.headers.authorization;
+        const token2 = req.headers.token;
+        console.log("token1", token1);
+        console.log("token2", token2);
+        if(token1){
+            const accessToken = token1.split(" ")[1];
+            jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, account) => {
+                if(err){
+                    return res.status(403).json("Token is not valid");
+                }
+                req.account = account;
+                next();
+            });
+        }else if(token2){
+            const accessToken = token2.split(" ")[1];
             jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, account) => {
                 if(err){
                     return res.status(403).json("Token is not valid");
@@ -132,7 +144,7 @@ export const middlewareController = {
                 const lastRequestTime = requestTimestamps.get(accountId);
 
                 // Nếu thời gian từ lần request trước < 10 phút
-                if (currentTime - lastRequestTime < 10 * 60 * 1000) {
+                if (currentTime - lastRequestTime < 10) {
                     return res.status(429).json("You can only insert once every 10 minutes.");
                 }
             }
@@ -141,7 +153,19 @@ export const middlewareController = {
             next();
         });
     },
+    
+    // Verify token and allow only Admin or Partner to add jobs
+    verifyTokenAndAllowJobCreation: (req, res, next) => {
+        middlewareController.verifyToken(req, res, async () => {
+            const { role } = req.account;
 
+            if (role === "admin" || role === "partner") {
+                return next(); 
+            }
+
+            return res.status(403).json("Only admins or partners are allowed to add jobs.");
+        });
+    },
      
   
 }

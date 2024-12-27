@@ -3,6 +3,8 @@ import Job from "../models/Job.js";
 import JobCV from "../models/JobCV.js";
 import JobApplication from "../models/JobApplication.js";
 import path from "path";
+import cloudinaryInstance from "cloudinary";
+const cloudinary = cloudinaryInstance.v2;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -67,7 +69,7 @@ export const jobController = {
     } catch (error) {
         return res.status(500).json(error);
     }
-},
+  },
 
   // get single job
   getSingleJob: async (req, res) => {
@@ -139,7 +141,8 @@ export const jobController = {
     }
   },
 
-  getAllJobs: async (req, res) => {
+  /// Get all job by 
+  getAllJobPage: async (req, res) => {
     const page = parseInt(req.query.page);
     try {
       const jobs = await Job.find({})
@@ -159,6 +162,152 @@ export const jobController = {
       res.status(404).json({
         success: false,
         message: "Not found",
+      });
+    }
+  },
+  
+  // Create new job 
+  insertJob: async (req, res) => {
+    let fileData;
+    try {
+      fileData = req.file; 
+      console.log(fileData);
+  
+      const {
+        title,
+        description,
+        requirements,
+        country,
+        location,
+        company,
+        experience,
+        profession,
+        educationalLevel,
+        jobStatus,
+        minSalary,
+        maxSalary,
+        partnerId,
+      } = req.body;
+  
+      // Lưu đường dẫn ảnh nếu có file được upload
+      const jobImage = fileData?.path;
+  
+      const jobData = {
+        title,
+        description,
+        requirements,
+        country,
+        location,
+        company,
+        experience,
+        profession,
+        educationalLevel,
+        jobStatus,
+        minSalary,
+        maxSalary,
+        partnerId,
+        image: jobImage, 
+      };
+  
+      // Tạo và lưu một Job mới
+      const job = new Job(jobData);
+      const savedJob = await job.save();
+  
+      return res.status(200).json({
+        success: true,
+        data: savedJob,
+      });
+    } catch (error) {
+      console.error({
+        success: false,
+        data: error,
+        message: "Error inserting job",
+      });
+  
+      // Xóa ảnh khỏi Cloudinary nếu có lỗi xảy ra
+      if (fileData && fileData.filename) {
+        await cloudinary.uploader.destroy(fileData.filename);
+      }
+  
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  },
+
+  // Update job
+  updateJob: async (req, res) => {
+    let fileData;
+    try {
+      fileData = req.file;
+      console.log(fileData);
+  
+      const {
+        title,
+        description,
+        requirements,
+        country,
+        location,
+        company,
+        experience,
+        profession,
+        educationalLevel,
+        jobStatus,
+        minSalary,
+        maxSalary,
+        partnerId,
+      } = req.body;
+  
+      // Tìm Job theo ID
+      const job = await Job.findById(req.params._id);
+  
+      if (!job) {
+        return res.status(404).json({
+          success: false,
+          message: "Job not found",
+        });
+      }
+  
+      // Cập nhật thông tin Job nếu có dữ liệu mới
+      if (title !== undefined) job.title = title;
+      if (description !== undefined) job.description = description;
+      if (requirements !== undefined) job.requirements = requirements;
+      if (country !== undefined) job.country = country;
+      if (location !== undefined) job.location = location;
+      if (company !== undefined) job.company = company;
+      if (experience !== undefined) job.experience = experience;
+      if (profession !== undefined) job.profession = profession;
+      if (educationalLevel !== undefined) job.educationalLevel = educationalLevel;
+      if (jobStatus !== undefined) job.jobStatus = jobStatus;
+      if (minSalary !== undefined) job.minSalary = minSalary;
+      if (maxSalary !== undefined) job.maxSalary = maxSalary;
+      if (partnerId !== undefined) job.partnerId = partnerId;
+  
+      // Xử lý cập nhật ảnh
+      if (fileData?.path) {
+        // Xóa ảnh cũ trên Cloudinary nếu có
+        if (job.image && job.image.includes("cloudinary")) {
+          const oldImagePublicId = job.image.split("/").pop().split(".")[0]; // Lấy public ID từ URL
+          await cloudinary.uploader.destroy(oldImagePublicId);
+        }
+        // Gán ảnh mới
+        job.image = fileData.path;
+      }
+  
+      // Lưu thông tin job đã cập nhật
+      const updatedJob = await job.save();
+  
+      return res.status(200).json({
+        success: true,
+        data: updatedJob,
+      });
+    } catch (error) {
+      // Xóa ảnh khỏi Cloudinary nếu có lỗi
+      if (fileData && fileData.filename) {
+        await cloudinary.uploader.destroy(fileData.filename);
+      }
+      return res.status(500).json({
+        success: false,
+        message: "Error updating job",
+        error: error.message,
       });
     }
   },
