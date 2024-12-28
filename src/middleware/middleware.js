@@ -156,7 +156,7 @@ export const middlewareController = {
                 const lastRequestTime = requestTimestamps.get(accountId);
 
                 // Nếu thời gian từ lần request trước < 10 phút
-                if (currentTime - lastRequestTime < 10) {
+                if (currentTime - lastRequestTime < 10 * 60 * 1000) {
                     return res.status(429).json("You can only insert once every 10 minutes.");
                 }
             }

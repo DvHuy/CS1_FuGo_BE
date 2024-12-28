@@ -66,7 +66,8 @@ export const jobController = {
   // get all job
   getAllJob: async (req, res) => {
     try {
-      const jobs = await Job.find();
+      const jobs = await Job.find({ jobStatus: { $ne: "stopped" }});
+
       return res.status(200).json({ data: jobs });
     } catch (error) {
       return res.status(500).json(error);
@@ -163,12 +164,12 @@ export const jobController = {
   getAllJobPage: async (req, res) => {
     const page = parseInt(req.query.page);
     try {
-      const jobs = await Job.find({})
+      const jobs = await Job.find({ jobStatus: { $ne: "stopped" }})
         .populate("partnerId")
         .skip(page * 8)
         .limit(8);
 
-      const jobCount = await Job.estimatedDocumentCount();
+      const jobCount = await Job.countDocuments({ jobStatus: { $ne: "stopped" } });
 
       res.status(200).json({
         success: true,

@@ -55,19 +55,31 @@ export const partnerController = {
   // Delete partner by account_id
   deletePartner: async (req, res) => {
     try {
-      const partner = await Partner.findOneAndDelete(req.params.account_id);
-      if (!partner) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Partner not found" });
-      }
-      return res
-        .status(200)
-        .json({ success: true, message: "Delete successfully!" });
+        // Tìm và xóa đối tác theo account_id
+        const partner = await Partner.findOneAndDelete(req.params.account_id);
+        
+        if (!partner) {
+            return res.status(404).json({ success: false, message: "Partner not found" });
+        }
+
+        // Cập nhật trạng thái của các Job liên quan
+        await Job.updateMany(
+            { partnerId: partner._id },
+            { $set: { jobStatus: "stopped" } }
+        );
+
+        // Cập nhật trạng thái của các chương trình du học liên quan
+        await StudyAbroad.updateMany(
+            { partnerId: partner._id },
+            { $set: { status: "stopped" } }
+        );
+
+        return res.status(200).json({ success: true, message: "Delete successfully and related statuses updated!" });
     } catch (error) {
-      return res.status(500).json({ success: false, error: error.message });
+        return res.status(500).json({ success: false, error: error.message });
     }
   },
+
 
   // Insert Partner
   insertPartner: async (req, res) => {

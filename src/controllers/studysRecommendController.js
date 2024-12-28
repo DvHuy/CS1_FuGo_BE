@@ -6,9 +6,9 @@ export const StudysRecommendController = {
     // Get job recommend by id 
     getStudysRecommend : async (req, res) => {
         try {
-            const { account_id } = req.body;
+            const { accountId } = req.body;
             // Tạo key Redis sử dụng account_id
-            const redisKey = `recommendStudy:${account_id}`;
+            const redisKey = `recommendStudy:${accountId}`;
             console.log("Redis Key:", redisKey);
 
             const studysRecommend = await redisServer.getPromise(redisKey);
@@ -50,7 +50,7 @@ export const StudysRecommendController = {
             const recommendData = response.data;
 
             // Lấy account_id từ recommendData
-            const extractedAccountId = recommendData.account_id;
+            const extractedAccountId = recommendData.accountId;
             console.log("Extracted Account ID:", extractedAccountId);
             
             // Tạo key Redis sử dụng account_id
