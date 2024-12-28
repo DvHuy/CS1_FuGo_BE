@@ -9,13 +9,13 @@ export const userController = {
   getUserByAccountId: async (req, res) => {
     try {
       const user = await User.findOne({ accountId: req.params.accountId });
-      const account = await Account.findOne({ accountId: req.params.id });
+      const account = await Account.findOne({ _id: req.params.accountId });
       // console.log("account.email before: ", account.email);
       const decryptedAddress = decrypt(account.email);
       account.email = decryptedAddress;
       // console.log("account.email after: ", account.email);
       let accountEmail = account.email;
-      console.log(user);
+    
       if (!user) {
         return res
           .status(404)
@@ -32,19 +32,12 @@ export const userController = {
       return res.status(200).json({
         success: true,
         data: {
-          accountId: user.accountId,
           username: user.username,
           email: accountEmail,
           birthday: user.birthday,
           phone: user.phone,
           gender: user.gender,
-          status_to_go: user.status_to_go,
-          country: user.country,
-          address: user.address,
-          height: user.height,
-          weight: user.weight,
           bio: user.bio,
-          user_img: user.user_img,
         },
       });
     } catch (error) {

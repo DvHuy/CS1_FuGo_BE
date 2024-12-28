@@ -24,7 +24,7 @@ export const applyJobCV = async (req, res) => {
     const {
       jobId,
       accountId,
-      fullName,
+      username,
       gender,
       phone,
       email,
@@ -36,7 +36,7 @@ export const applyJobCV = async (req, res) => {
     const newJobCV = new JobCV({
       jobId: jobId,
       accountId: accountId,
-      fullName: fullName,
+      fullName: username,
       gender: gender,
       phone: phone,
       email: email,

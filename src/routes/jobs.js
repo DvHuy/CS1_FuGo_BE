@@ -1,8 +1,7 @@
 import express from "express";
 import {applyJobCV, jobController, upload} from "../controllers/jobController.js"
-import { middlewareController } from "../middleware/middleware.js";
 import {uploadCloud} from "../middleware/cloudinary.js";
-
+import { middlewareController } from "../middleware/middleware.js";
 //sau này import middleware
 
 const router = express.Router();
@@ -24,7 +23,8 @@ router.post("/apply", upload.single("image"), applyJobCV);
 
 // create new job
 router.post("/insert" , middlewareController.verifyTokenAndAllowJobCreation , uploadCloud.single('image'), jobController.insertJob);
-
+// router.post("/insert" , uploadCloud.single('image'), jobController.insertJob);
 // create new job
 router.put("/update/:jobId" , middlewareController.verifyTokenAndAllowJobCreation, uploadCloud.single('image'), jobController.updateJob);
+
 export default router;
