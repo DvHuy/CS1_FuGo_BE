@@ -164,6 +164,7 @@ export const jobController = {
     const page = parseInt(req.query.page);
     try {
       const jobs = await Job.find({})
+        .populate("partnerId")
         .skip(page * 8)
         .limit(8);
 
