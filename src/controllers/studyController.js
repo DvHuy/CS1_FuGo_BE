@@ -92,23 +92,28 @@ export const getSingleStudy = async (req,res) => {
     }
 };
 
-// get all job
-export const getAllStudy = async (req,res) => {
+export const getAllStudy = async (req, res) => {
+    // for pagination
+    const page = parseInt(req.query.page);
+
     try {
-        const studyAbroad = await StudyAbroad.find();
-        console.log("study", studyAbroad );
+        const studies = await StudyAbroad.find({}).skip(page * 8).limit(8);
+        // console.log("StudyAbroad: ", studies);
+        const studyCount = await StudyAbroad.estimatedDocumentCount();
 
         res.status(200).json({
-            success : true, 
-            count : studyAbroad.length,
-            message: "Successfull",
-            data: studyAbroad,
+            success: true,
+            count: studies.length,
+            message: "Successful",
+            data: studies,
+            studyCount: studyCount
         });
 
     } catch (error) {
+        console.log(error);
         res.status(404).json({
-            success:false,
-            message:"Not found",
+            success: false,
+            message: "Not found",
         });
     }
 };
